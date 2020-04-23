@@ -10,7 +10,8 @@ let states = {
   },
   clipboard: {
     files: [],
-    folders: []
+    folders: [],
+    command: ''
   },
   selectedItem: {
     files: [],
@@ -22,7 +23,7 @@ let states = {
       id: ''
     }
   ],
-  isLoading: false
+  isLoading: false,
 }
 export default {
   state() {

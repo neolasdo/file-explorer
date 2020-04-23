@@ -2,11 +2,7 @@
   <v-card class="mt-3">
     <v-breadcrumbs :items="formattedBreadcrumb" class="pa-3 custom-breadcrumb">
       <template v-slot:item="{ item }">
-        <v-breadcrumbs-item
-          :href="'#'"
-          @click="getByFolder(item)"
-          :disabled="item.disabled"
-        >
+        <v-breadcrumbs-item :href="'#'" @click="getByFolder(item)" :disabled="item.disabled">
           {{ item.text.toUpperCase() }}
         </v-breadcrumbs-item>
       </template>
@@ -18,7 +14,7 @@
           <v-col v-for="(item, index) in list.children" :key="index" cols="3">
             <v-hover v-slot:default="{ hover }">
               <v-card class="pa-2 dir-card" :class="{'active': checkFolderSelected(item)}"
-                      @click.ctrl.stop="toggleFolderSelect(item)"
+                      @click.stop="toggleFolderSelect(item, $event)"
                       :elevation="hover ? 8 : 4"
                       @contextmenu.prevent.stop="showMenuContextFolder(item, $event)"
                       @dblclick.stop="getByFolder(item)">
@@ -37,8 +33,7 @@
           <v-col v-for="(item, index) in list.files" :key="index" cols="3">
             <v-hover v-slot:default="{ hover }">
               <v-card class="pa-2 file-card" :class="{'active': checkFileSelected(item)}"
-                      @click.ctrl.stop="toggleFileSelect(item)"
-                      :elevation="hover ? 8 : 4" @dblclick.stop="executeCommand({ command: 'download', items: item})"
+                      @click.stop="toggleFileSelect(item, $event)":elevation="hover ? 8 : 4" @dblclick.stop="executeCommand({ command: 'download', items: item})"
                       @contextmenu.prevent.stop="showMenuContextFile(item, $event)">
                 <v-list-item three-line dense>
                   <v-list-item-icon><v-icon large>mdi-file</v-icon></v-list-item-icon>
@@ -53,8 +48,9 @@
         </v-row>
       </div>
     </v-container>
-    <document-context-menu ref="contextMenu" :selected-items="selectedItems"
+    <document-context-menu ref="contextMenu" :selected-items="selectedItems" @refresh="getByFolder(current)"
                            @run-command="resetSelected" @openFolder="getByFolder($event)"/>
+    <span class="pa-2 font-italic caption">Use CTRL + left mouse button click to select multiple file & folder</span>
   </v-card>
 </template>
 
@@ -118,7 +114,10 @@
           folders: []
         };
       },
-      toggleFolderSelect(item) {
+      toggleFolderSelect(item, e) {
+        if (!e.ctrlKey) {
+          this.resetSelected()
+        }
         let index = this.selectedItems.folders.findIndex(element => {
           return element.id === item.id;
         });
@@ -128,7 +127,10 @@
           this.selectedItems.folders.push(item);
         }
       },
-      toggleFileSelect(item) {
+      toggleFileSelect(item, e) {
+        if (!e.ctrlKey) {
+          this.resetSelected()
+        }
         let index = this.selectedItems.files.findIndex(element => {
           return element.id === item.id;
         });
@@ -183,13 +185,22 @@
 </script>
 <style>
   .file-explorer {
-    background-color: #e5e5e5;
+    background-color: #e0e0e0;
   }
+
   .v-breadcrumbs {
     border-bottom: 1px solid #ddd;
   }
 
   .dir-card.active, .file-card.active {
-    background-color: #c5c5c5;
+    color: #4385f4;
+    background-color: #e5e5e5;
+    border: 1px solid #4385f4
+  }
+
+  .dir-card:not(.active), .file-card:not(.active) {
+    color: #000;
+    background-color: #fff;
+    border: 1px solid #fff
   }
 </style>

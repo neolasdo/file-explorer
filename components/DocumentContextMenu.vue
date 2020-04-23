@@ -3,7 +3,7 @@
     <document-upload-modal ref="uploadModal"></document-upload-modal>
     <v-menu v-model="showMenu" :position-x="x" :position-y="y" absolute offset-y>
       <v-list dense>
-        <v-list-item @click="runCommand('preview')"
+        <v-list-item @click="preview"
                      v-if="selectedItems.files.length === 1 && selectedItems.folders.length === 0">
           <v-list-item-icon>
             <v-icon>mdi-eye</v-icon>
@@ -13,7 +13,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item @click="showCreateModal"
-                     v-if="selectedItems.files.length === 0 && selectedItems.folders.length === 0">
+                     v-if="selectedItems.files.length + selectedItems.folders.length === 0">
           <v-list-item-icon>
             <v-icon>mdi-plus</v-icon>
           </v-list-item-icon>
@@ -22,7 +22,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item @click="openUploadModal"
-                     v-if="selectedItems.files.length === 0 && selectedItems.folders.length === 0">
+                     v-if="selectedItems.files.length + selectedItems.folders.length === 0">
           <v-list-item-icon>
             <v-icon>mdi-upload</v-icon>
           </v-list-item-icon>
@@ -38,8 +38,8 @@
             <v-list-item-title>Open</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item @click="showEditModal(selectedItems.files[0] || selectedItems.folders[0])"
-                     v-if="selectedItems.files.length  + selectedItems.folders.length === 1">
+        <v-list-item @click="showEditModal()"
+                     v-if="selectedItems.files.length + selectedItems.folders.length === 1">
           <v-list-item-icon>
             <v-icon>mdi-pencil</v-icon>
           </v-list-item-icon>
@@ -47,8 +47,7 @@
             <v-list-item-title>Rename</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item @click="runCommand('download')"
-                     v-if="selectedItems.files.length > 0 || selectedItems.folders.length > 0">
+        <v-list-item @click="download" v-if="selectedItems.files.length + selectedItems.folders.length > 0">
           <v-list-item-icon>
             <v-icon>mdi-download</v-icon>
           </v-list-item-icon>
@@ -57,7 +56,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item @click="runCommand('move')"
-                     v-if="selectedItems.files.length > 0 || selectedItems.folders.length > 0">
+                     v-if="selectedItems.files.length + selectedItems.folders.length > 0">
           <v-list-item-icon>
             <v-icon>mdi-arrow-all</v-icon>
           </v-list-item-icon>
@@ -66,7 +65,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item @click="runCommand('copy')"
-                     v-if="selectedItems.files.length > 0 || selectedItems.folders.length > 0">
+                     v-if="selectedItems.files.length + selectedItems.folders.length > 0">
           <v-list-item-icon>
             <v-icon>mdi-content-copy</v-icon>
           </v-list-item-icon>
@@ -75,7 +74,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item @click="runCommand('paste')"
-                     v-if="(clipboard.files && clipboard.files.length > 0) || (clipboard.folders && clipboard.folders.length > 0)">
+                     v-if="(clipboard.files.length + clipboard.folders.length > 0) && ( selectedItems.files.length + selectedItems.folders.length === 0)">
           <v-list-item-icon>
             <v-icon>mdi-content-paste</v-icon>
           </v-list-item-icon>
@@ -83,8 +82,7 @@
             <v-list-item-title>Paste</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item @click="runCommand('delete')"
-                     v-if="selectedItems.files.length > 0 || selectedItems.folders.length > 0">
+        <v-list-item @click="deleteAll()" v-if="selectedItems.files.length + selectedItems.folders.length > 0">
           <v-list-item-icon>
             <v-icon>mdi-delete</v-icon>
           </v-list-item-icon>
@@ -94,35 +92,23 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-dialog v-model="showFormModal " persistent max-width="600px">
-      <v-card>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12">
-                <v-text-field label="Name" v-model="name" required></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="closeCreateModal">Close</v-btn>
-          <v-btn color="blue darken-1" text @click="submit">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <document-form-modal ref="documentFormModal" @submit-success="refresh()"/>
+    <document-preview-modal ref="documentPreviewModal"/>
   </div>
 </template>
 
 <script>
   import {mapActions, mapState} from 'vuex'
   import DocumentUploadModal from "./DocumentUploadModal";
+  import DocumentFormModal from "./DocumentFormModal";
+  import DocumentPreviewModal from './DocumentPreviewModal'
 
   export default {
     name: 'DocumentContextMenu',
     components: {
-      'document-upload-modal': DocumentUploadModal
+      'document-upload-modal': DocumentUploadModal,
+      'document-form-modal': DocumentFormModal,
+      'document-preview-modal': DocumentPreviewModal,
     },
     props: {
       selectedItems: {
@@ -137,6 +123,7 @@
       ...mapState({
         clipboard: state => state.document.clipboard,
         isLoading: state => state.document.isLoading,
+        current: state => state.document.current,
       }),
     },
     data() {
@@ -145,7 +132,7 @@
         x: 0,
         y: 0,
         name: '',
-        showFormModal : false
+        showFormModal: false
       }
     },
     methods: {
@@ -164,42 +151,36 @@
         });
         this.$emit('run-command');
       },
+      download() {
+
+      },
+      deleteAll() {
+
+      },
+      preview() {
+        if (this.selectedItems.files.length === 1) {
+          this.$refs.documentPreviewModal.showPreview(this.selectedItems.files[0])
+        }
+      },
       openUploadModal() {
         this.$refs.uploadModal.showModal();
-      },
-      submit() {
-        if (this.selectedItems.files.length + this.selectedItems.folders.length === 1) {
-          if (this.selectedItems.files[0]) {
-            this.editFile({
-              id: this.selectedItems.files[0].id,
-              name: this.name
-            })
-          }
-          if (this.selectedItems.folders[0]) {
-            this.editFolder({
-              id: this.selectedItems.folders[0].id,
-              name: this.name
-            })
-          }
-        }
-        this.createFolder({
-          name: this.name
-        })
-        this.closeCreateModal()
       },
       openFolder() {
         this.$emit('openFolder', this.selectedItems.folders[0])
       },
-      closeCreateModal() {
-        this.showFormModal  = false
+      refresh() {
+        this.$emit('refresh')
       },
       showCreateModal() {
-        this.name = '';
-        this.showFormModal  = true;
+        this.$refs.documentFormModal.showCreateFolderModal();
       },
-      showEditModal(item) {
-        this.name = item.name;
-        this.showFormModal  = true;
+      showEditModal() {
+        if (this.selectedItems.files.length === 1) {
+          this.$refs.documentFormModal.showEditFileNameModal(this.selectedItems.files[0]);
+        }
+        if (this.selectedItems.folders.length === 1) {
+          this.$refs.documentFormModal.showEditFolderModal(this.selectedItems.folders[0]);
+        }
       },
       showContextMenu(e) {
         this.showMenu = false;

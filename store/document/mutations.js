@@ -1,12 +1,14 @@
 export default {
   UPDATE_CLIPBOARD(state, payload) {
-    state.clipboard.files = payload.files
-    state.clipboard.folders = payload.folders
+    state.clipboard.files = payload.items.files
+    state.clipboard.folders = payload.items.folders
+    state.clipboard.command = payload.command
   },
   CLEAR_CLIPBOARD(state) {
     state.clipboard = {
       files: [],
-      folders: []
+      folders: [],
+      command: ''
     }
   },
   LOADING(state) {
@@ -30,7 +32,6 @@ export default {
     }
   },
   UPDATE_BREADCRUMB(state, payload) {
-    console.log(payload)
     if (payload && payload.id) {
       let index = state.breadcrumb.findIndex(item => {
         return item.id === payload.id

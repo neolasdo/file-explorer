@@ -25,17 +25,12 @@ export default {
   executeCommand({ state, commit, rootState }, payload) {
     switch (payload.command) {
       case 'move': case 'copy': {
-        console.log(payload.items)
-        commit('UPDATE_CLIPBOARD', payload.items);
+        commit('UPDATE_CLIPBOARD', payload);
         break;
       }
-      case 'download': {
-        break
-      }
-      case 'delete': {
-        break
-      }
       case 'paste': {
+        let command  = state.clipboard.command;
+        console.log(command)
         commit('CLEAR_CLIPBOARD');
         break
       }
