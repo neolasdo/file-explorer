@@ -3,7 +3,7 @@
     <v-card dark color="primary" v-if="showModal">
       <v-card-text>
         <v-container>
-          <pdf-preview :src="'http://localhost:3000/sample.pdf'"/>
+<!--          <pdf-preview :src="'http://localhost:3000/sample.pdf'"/>-->
         </v-container>
       </v-card-text>
       <v-card-actions>
@@ -15,11 +15,11 @@
 </template>
 
 <script>
-  import PdfPreview from "./PdfPreview";
+  // import PdfPreview from "./PdfPreview";
   export default {
     name: 'DocumentPreviewModal',
     components: {
-      'pdf-preview': PdfPreview
+      // 'pdf-preview': PdfPreview
     },
     data() {
       return {

@@ -1,12 +1,6 @@
 <template>
   <div>
-    <pdf
-      v-for="i in numPages"
-      :key="i"
-      :src="src"
-      :page="i"
-      style="margin-bottom: 20px"
-    ></pdf>
+    <pdf v-for="i in numPages" :key="i" :src="src" :page="i" style="margin-bottom: 20px"/>
   </div>
 </template>
 
@@ -23,11 +17,6 @@
         required: true
       }
     },
-    computed: {
-      loadingSrc() {
-        return pdf.createLoadingTask(this.src);
-      }
-    },
     data() {
       return {
         page: 1,
@@ -35,7 +24,7 @@
       }
     },
     mounted() {
-      this.loadingSrc.then(pdf => {
+      pdf.createLoadingTask(this.src).then(pdf => {
         this.numPages = pdf.numPages;
       });
     }

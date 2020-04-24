@@ -21,6 +21,15 @@
             <v-list-item-title>New folder</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item @click="$emit('select-all')"
+                     v-if="selectedItems.files.length + selectedItems.folders.length === 0">
+          <v-list-item-icon>
+            <v-icon>mdi-check-all</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Select all</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item @click="openUploadModal"
                      v-if="selectedItems.files.length + selectedItems.folders.length === 0">
           <v-list-item-icon>
@@ -149,13 +158,15 @@
           command: command,
           items: this.selectedItems
         });
-        this.$emit('run-command');
+        this.$emit('reset-selected');
       },
       download() {
-
+        // @TODO: add axios for create download link for all selected files and folders
+        this.$emit('reset-selected');
       },
       deleteAll() {
-
+        // @TODO: add axios for delete all selected files, folders
+        this.refresh()
       },
       preview() {
         if (this.selectedItems.files.length === 1) {

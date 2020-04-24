@@ -14,12 +14,14 @@ export default {
     commit('CLEAR_CLIPBOARD');
   },
   createFolder({ state, commit, rootState }, payload) {
-
+    // @TODO: using axios to call create Folder api
   },
   editFolder({ state, commit, rootState }, payload) {
+    // @TODO: using axios to call edit Folder name api
 
   },
   editFile({ state, commit, rootState }, payload) {
+    // @TODO: using axios to call edit File name api
 
   },
   executeCommand({ state, commit, rootState }, payload) {
@@ -30,7 +32,9 @@ export default {
       }
       case 'paste': {
         let command  = state.clipboard.command;
-        console.log(command)
+        let folderId = state.current.id;
+        console.log(command, folderId)
+        // @TODO: Execute command $command (using axios run copy of move)
         commit('CLEAR_CLIPBOARD');
         break
       }

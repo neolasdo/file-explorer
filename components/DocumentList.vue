@@ -2,9 +2,12 @@
   <v-card class="mt-3">
     <v-breadcrumbs :items="formattedBreadcrumb" class="pa-3 custom-breadcrumb">
       <template v-slot:item="{ item }">
-        <v-breadcrumbs-item :href="'#'" @click="getByFolder(item)" :disabled="item.disabled">
+        <v-breadcrumbs-item :href="'#'" @click="openFolder(item)" :disabled="item.disabled">
           {{ item.text.toUpperCase() }}
         </v-breadcrumbs-item>
+      </template>
+      <template v-slot:divider>
+        <v-icon>mdi-chevron-right</v-icon>
       </template>
     </v-breadcrumbs>
     <v-container class="file-explorer" @click="onClickContainer()" @contextmenu.prevent="showContainerMenu($event)">
@@ -17,10 +20,14 @@
                       @click.stop="toggleFolderSelect(item, $event)"
                       :elevation="hover ? 8 : 4"
                       @contextmenu.prevent.stop="showMenuContextFolder(item, $event)"
-                      @dblclick.stop="getByFolder(item)">
+                      @dblclick.stop.prevent="openFolder(item)">
                 <v-list-item dense>
-                  <v-list-item-icon><v-icon large>mdi-folder</v-icon></v-list-item-icon>
-                  <v-list-item-content><v-list-item-title>{{ item.name }}</v-list-item-title></v-list-item-content>
+                  <v-list-item-icon>
+                    <v-icon large>mdi-folder</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title>{{ item.name }}</v-list-item-title>
+                  </v-list-item-content>
                 </v-list-item>
               </v-card>
             </v-hover>
@@ -33,10 +40,13 @@
           <v-col v-for="(item, index) in list.files" :key="index" cols="3">
             <v-hover v-slot:default="{ hover }">
               <v-card class="pa-2 file-card" :class="{'active': checkFileSelected(item)}"
-                      @click.stop="toggleFileSelect(item, $event)":elevation="hover ? 8 : 4" @dblclick.stop="executeCommand({ command: 'download', items: item})"
+                      @click.stop="toggleFileSelect(item, $event)" :elevation="hover ? 8 : 4"
+                      @dblclick.stop.prevent="executeCommand({ command: 'download', items: item})"
                       @contextmenu.prevent.stop="showMenuContextFile(item, $event)">
                 <v-list-item three-line dense>
-                  <v-list-item-icon><v-icon large>mdi-file</v-icon></v-list-item-icon>
+                  <v-list-item-icon>
+                    <v-icon large>mdi-file</v-icon>
+                  </v-list-item-icon>
                   <v-list-item-content>
                     <v-list-item-title>{{ item.name }}</v-list-item-title>
                     <v-list-item-subtitle>{{ formatSize(item.size) }} <br> {{ item.created_at }}</v-list-item-subtitle>
@@ -48,8 +58,10 @@
         </v-row>
       </div>
     </v-container>
-    <document-context-menu ref="contextMenu" :selected-items="selectedItems" @refresh="getByFolder(current)"
-                           @run-command="resetSelected" @openFolder="getByFolder($event)"/>
+    <document-context-menu ref="contextMenu" :selected-items="selectedItems" @refresh="openFolder(current)"
+                           @reset-selected="resetSelected" @openFolder="openFolder($event)" @select-all="selectAll()"/>
+    <document-detail :selected-items="selectedItems"/>
+    <v-divider></v-divider>
     <span class="pa-2 font-italic caption">Use CTRL + left mouse button click to select multiple file & folder</span>
   </v-card>
 </template>
@@ -58,11 +70,13 @@
   import {mapActions, mapState} from 'vuex'
   import DocumentContextMenu from "./DocumentContextMenu";
   import {formatSize} from '@/helpers/file'
+  import DocumentDetail from "./DocumentDetail";
 
   export default {
     name: 'DocumentList',
     components: {
-      'document-context-menu': DocumentContextMenu
+      'document-context-menu': DocumentContextMenu,
+      'document-detail': DocumentDetail
     },
     props: {
       employee_id: {
@@ -105,8 +119,18 @@
         createFolder: 'document/createFolder',
         executeCommand: 'document/executeCommand',
       }),
+      openFolder(item) {
+        this.getByFolder(item)
+        this.resetSelected()
+      },
       formatSize(size) {
         return formatSize(size);
+      },
+      selectAll() {
+        this.selectedItems = {
+          files: this.list.files,
+          folders: this.list.children
+        };
       },
       resetSelected() {
         this.selectedItems = {
@@ -186,6 +210,8 @@
 <style>
   .file-explorer {
     background-color: #e0e0e0;
+    max-height: 500px;
+    overflow-y: auto;
   }
 
   .v-breadcrumbs {
@@ -202,5 +228,21 @@
     color: #000;
     background-color: #fff;
     border: 1px solid #fff
+  }
+
+  .file-explorer::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .file-explorer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  .file-explorer::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  .file-explorer::-webkit-scrollbar-thumb:hover {
+    background: #555;
   }
 </style>

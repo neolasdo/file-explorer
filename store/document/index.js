@@ -13,10 +13,6 @@ let states = {
     folders: [],
     command: ''
   },
-  selectedItem: {
-    files: [],
-    folders: []
-  },
   breadcrumb: [
     {
       text: 'Home',

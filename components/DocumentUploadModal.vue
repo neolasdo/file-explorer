@@ -90,6 +90,7 @@
           file: file,
           fileName: file.name,
           fileSize: formatSize(file.size, 20971520),
+          filePath: file.webkitRelativePath,
           isPublic: false,
           shareWith: []
         }
