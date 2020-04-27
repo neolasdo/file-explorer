@@ -41,6 +41,7 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
+    '@nuxtjs/axios',
   ],
   /*
   ** vuetify module configuration
@@ -62,6 +63,9 @@ export default {
         }
       }
     }
+  },
+  axios: {
+    // proxyHeaders: false
   },
   /*
   ** Build configuration

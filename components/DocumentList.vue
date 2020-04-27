@@ -18,7 +18,7 @@
             <v-hover v-slot:default="{ hover }">
               <v-card class="pa-2 dir-card" :class="{'active': checkFolderSelected(item)}"
                       @click.stop="toggleFolderSelect(item, $event)"
-                      :elevation="hover ? 8 : 4"
+                      :elevation="hover ? 8 : 4" ref="folders"
                       @contextmenu.prevent.stop="showMenuContextFolder(item, $event)"
                       @dblclick.stop.prevent="openFolder(item)">
                 <v-list-item dense>
@@ -39,7 +39,7 @@
         <v-row>
           <v-col v-for="(item, index) in list.files" :key="index" cols="3">
             <v-hover v-slot:default="{ hover }">
-              <v-card class="pa-2 file-card" :class="{'active': checkFileSelected(item)}"
+              <v-card class="pa-2 file-card" :class="{'active': checkFileSelected(item)}" ref="files"
                       @click.stop="toggleFileSelect(item, $event)" :elevation="hover ? 8 : 4"
                       @dblclick.stop.prevent="executeCommand({ command: 'download', items: item})"
                       @contextmenu.prevent.stop="showMenuContextFile(item, $event)">
@@ -191,7 +191,6 @@
         this.showContextMenu(e)
       },
       showContainerMenu(e) {
-        this.resetSelected();
         this.showContextMenu(e)
       },
       showContextMenu(e) {
@@ -212,6 +211,10 @@
     background-color: #e0e0e0;
     max-height: 500px;
     overflow-y: auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 
   .v-breadcrumbs {

@@ -146,7 +146,7 @@ let all = {
               name: 'File 13',
               id: 13,
               isDir: false,
-              path: 'http://localhost/file13',
+              path: 'http://localhost:3000/sample.pdf',
               mime: 'document/pdf',
               size: 125133,
               created_at: '2019-01-01'

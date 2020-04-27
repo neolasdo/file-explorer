@@ -4,7 +4,7 @@
     <v-menu v-model="showMenu" :position-x="x" :position-y="y" absolute offset-y>
       <v-list dense>
         <v-list-item @click="preview"
-                     v-if="selectedItems.files.length === 1 && selectedItems.folders.length === 0">
+                     v-if="canPreview()">
           <v-list-item-icon>
             <v-icon>mdi-eye</v-icon>
           </v-list-item-icon>
@@ -108,6 +108,7 @@
 
 <script>
   import {mapActions, mapState} from 'vuex'
+  import {canPreview} from "../helpers/file";
   import DocumentUploadModal from "./DocumentUploadModal";
   import DocumentFormModal from "./DocumentFormModal";
   import DocumentPreviewModal from './DocumentPreviewModal'
@@ -167,6 +168,9 @@
       deleteAll() {
         // @TODO: add axios for delete all selected files, folders
         this.refresh()
+      },
+      canPreview() {
+        return this.selectedItems.files.length === 1 && this.selectedItems.folders.length === 0 && canPreview(this.selectedItems.files[0].path)
       },
       preview() {
         if (this.selectedItems.files.length === 1) {

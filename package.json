@@ -11,8 +11,10 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@nuxtjs/axios": "^5.10.1",
     "nuxt": "^2.0.0",
-    "vue-pdf": "^4.0.8"
+    "vue-pdf": "^4.0.8",
+    "vue-upload-component": "^2.8.20"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.0.0"
