@@ -42,3 +42,15 @@ export function isVideoFile(filename) {
 export function canPreview(filename) {
   return isDocumentFile(filename) || isImageFile(filename) || isVideoFile(filename)
 }
+
+export function allFileTypes() {
+  let types = fileType.offices.concat(fileType.images, fileType.videos);
+  let allTypes = [];
+  types.forEach((item, index) => {
+    allTypes.push({
+      text: item.toUpperCase(),
+      value: item
+    })
+  })
+  return allTypes;
+}

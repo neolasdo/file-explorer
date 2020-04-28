@@ -2,7 +2,7 @@
   <div>
     <document-upload-modal ref="uploadModal"></document-upload-modal>
     <v-menu v-model="showMenu" :position-x="x" :position-y="y" absolute offset-y>
-      <v-list dense>
+      <v-list dense tile>
         <v-list-item @click="preview"
                      v-if="canPreview()">
           <v-list-item-icon>
