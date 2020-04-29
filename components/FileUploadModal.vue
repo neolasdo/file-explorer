@@ -67,7 +67,7 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
+  import {mapActions, mapState} from 'vuex'
   import {formatSize} from "@/helpers/file";
   import FileUpload from 'vue-upload-component'
 
@@ -78,7 +78,6 @@
     },
     data() {
       return {
-        showDialog: false,
         files: [],
         size: 1024 * 1024 * 10,
         accept: 'image/png,image/gif,image/jpeg,image/webp',
@@ -88,12 +87,12 @@
       }
     },
     methods: {
+      ...mapActions({
+        hideUploadModal: 'document/hideUploadModal',
+      }),
       closeModal() {
         this.files = []
-        this.showDialog = false
-      },
-      showModal() {
-        this.showDialog = true;
+        this.hideUploadModal()
       },
       async uploadAll(file, component) {
         let formData = new FormData();
@@ -111,6 +110,7 @@
     computed: {
       ...mapState({
         current: state => state.document.current,
+        showDialog: state => state.document.showUploadModal,
       }),
     },
   }

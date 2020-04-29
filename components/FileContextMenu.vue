@@ -10,7 +10,7 @@
             <v-list-item-title>Preview</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="selectedItems.length === 1" @click="showModalEdit()">
+        <v-list-item v-if="selectedItems.length === 1" @click="openFormModal()">
           <v-list-item-icon>
             <v-icon>mdi-pencil</v-icon>
           </v-list-item-icon>
@@ -37,27 +37,6 @@
       </v-list>
     </v-menu>
     <file-preview-modal ref="filePreviewModal"/>
-
-    <v-dialog v-model="showEditModal" v-if="selectedItems.length === 1" persistent max-width="600px">
-      <v-card>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12">
-                <v-text-field label="Name" v-model="name" required></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="showEditModal = false">Close</v-btn>
-          <v-btn color="blue darken-1" :disabled="selectedItems[0] && selectedItems[0].name === name" text
-                 @click="submitEditName()">Save
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
@@ -76,8 +55,6 @@
         showMenu: false,
         x: 0,
         y: 0,
-        showEditModal: false,
-        name: ''
       }
     },
     computed: {
@@ -89,6 +66,7 @@
       ...mapActions({
         download: 'document/download',
         deleteSelected: 'document/deleteSelected',
+        openFormModal: 'document/openFormModal',
       }),
       showContext(e) {
         this.showMenu = false;
@@ -101,15 +79,8 @@
       hideContext() {
         this.showMenu = false;
       },
-      showModalEdit() {
-        this.showEditModal = true
-        this.name = this.selectedItems[0].name
-      },
       canPreview() {
         return this.selectedItems.length === 1 && canPreview(this.selectedItems[0].path)
-      },
-      submitEditName() {
-        this.editFolderName({item: this.item, name: name})
       },
       deleteAll() {
         this.deleteSelected()

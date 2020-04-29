@@ -1,4 +1,21 @@
 export default {
+  OPEN_UPLOAD_MODAL(state) {
+    state.showUploadModal = true
+  },
+  HIDE_UPLOAD_MODAL(state) {
+    state.showUploadModal = false
+  },
+  OPEN_FORM_MODAL(state, createForm) {
+    if (createForm) {
+      state.formCreate = createForm
+    } else {
+      state.formCreate = false
+    }
+    state.showFormModal = true
+  },
+  HIDE_FORM_MODAL(state) {
+    state.showFormModal = false
+  },
   SELECT_FOLDER(state, payload) {
     state.selectedFolder = payload
   },

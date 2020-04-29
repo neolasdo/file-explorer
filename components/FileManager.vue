@@ -56,6 +56,8 @@
       </v-row>
     </v-container>
     <v-divider></v-divider>
+    <file-upload-modal ref="uploadModal"></file-upload-modal>
+    <form-modal ref="formModal"></form-modal>
     <span class="pa-2 font-italic caption">Use CTRL + left mouse button click to select multiple file & folder</span>
   </v-card>
 </template>
@@ -68,6 +70,8 @@
   import FileList from './FileList'
   import MainContextMenu from "./MainContextMenu"
   import DetailCard from "./DetailCard";
+  import FileUploadModal from "./FileUploadModal";
+  import FormModal from "./FormModal";
 
   export default {
     name: 'FileManager',
@@ -78,6 +82,8 @@
       'file-breadcrumb' : FileBreadcrumb,
       'folder-list' : FolderList,
       'file-list' : FileList,
+      'file-upload-modal': FileUploadModal,
+      'form-modal': FormModal,
     },
     props: {
       employee_id: {

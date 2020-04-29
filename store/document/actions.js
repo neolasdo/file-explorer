@@ -50,4 +50,16 @@ export default {
     // @TODO: using axios to call edit File name api
 
   },
+  openUploadModal({ state, commit, rootState }) {
+    commit('OPEN_UPLOAD_MODAL')
+  },
+  hideUploadModal({ state, commit, rootState }) {
+    commit('HIDE_UPLOAD_MODAL')
+  },
+  openFormModal({ state, commit, rootState }, createForm) {
+    commit('OPEN_FORM_MODAL', createForm)
+  },
+  hideFormModal({ state, commit, rootState }) {
+    commit('HIDE_FORM_MODAL')
+  }
 }

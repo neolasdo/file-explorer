@@ -55,10 +55,10 @@
           </v-btn>
         </template>
         <v-list tile dense>
-          <v-list-item @click="">
+          <v-list-item @click="openUploadModal">
             <v-list-item-title>ファイルのアップロード</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="">
+          <v-list-item @click="openFormModal(true)">
             <v-list-item-title>フォルダーの追加</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -90,6 +90,7 @@
 
 <script>
   import {allFileTypes} from '@/helpers/file'
+  import {mapActions, mapState} from 'vuex'
 
   export default {
     name: 'FileToolBar',
@@ -116,12 +117,22 @@
         ]
       }
     },
+    computed: {
+      ...mapState({
+        selectedFiles: state => state.document.selectedFiles,
+        current: state => state.document.current,
+      }),
+    },
     methods: {
       getAllType() {
         let allTypes = [];
         allTypes.push({text: 'すべて', value: ''})
         return allTypes.concat(allFileTypes())
       },
+      ...mapActions({
+        openUploadModal: 'document/openUploadModal',
+        openFormModal: 'document/openFormModal',
+      }),
     }
   }
 </script>

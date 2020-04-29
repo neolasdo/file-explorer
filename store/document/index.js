@@ -17,6 +17,9 @@ let states = {
       id: ''
     }
   ],
+  showUploadModal: false,
+  showFormModal: false,
+  formCreate: false,
   isLoading: false,
 }
 export default {
