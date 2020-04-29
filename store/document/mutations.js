@@ -1,15 +1,18 @@
 export default {
-  UPDATE_CLIPBOARD(state, payload) {
-    state.clipboard.files = payload.items.files
-    state.clipboard.folders = payload.items.folders
-    state.clipboard.command = payload.command
+  SELECT_FOLDER(state, payload) {
+    state.selectedFolder = payload
   },
-  CLEAR_CLIPBOARD(state) {
-    state.clipboard = {
-      files: [],
-      folders: [],
-      command: ''
-    }
+  RESET_SELECTED_FOLDER(state) {
+    state.selectedFolder = {}
+  },
+  RESET_SELECTED_FILES(state) {
+    state.selectedFiles = []
+  },
+  REMOVE_FILE_SELECTED(state, payload) {
+    state.selectedFiles.splice(payload, 1);
+  },
+  ADD_FILE_SELECTED(state, payload) {
+    state.selectedFiles.push(payload)
   },
   LOADING(state) {
     state.isLoading = true;
@@ -18,7 +21,8 @@ export default {
     state.isLoading = false;
   },
   UPDATE_LIST(state, payload) {
-    state.list = payload
+    state.files = payload.files
+    state.folders = payload.children
   },
   UPDATE_CURRENT(state, payload) {
     if (payload && payload.id) {

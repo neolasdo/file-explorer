@@ -8,39 +8,46 @@ export default {
     let res = await getByFolder(item && item.id)
     commit('UPDATE_LIST', res)
     commit('UPDATE_CURRENT', res  )
+    commit('RESET_SELECTED_FILES');
+    commit('RESET_SELECTED_FOLDER');
     commit('UNLOADING');
   },
-  clearClipBoard({ state, commit, rootState }) {
-    commit('CLEAR_CLIPBOARD');
+  selectFolder({ state, commit, rootState }, payload) {
+    commit('RESET_SELECTED_FILES');
+    commit('SELECT_FOLDER', payload);
+  },
+  resetSelectedFiles({ state, commit, rootState }) {
+    commit('RESET_SELECTED_FILES');
+  },
+  removeFileSelected({ state, commit, rootState }, payload) {
+    commit('REMOVE_FILE_SELECTED', payload);
+    commit('RESET_SELECTED_FOLDER');
+  },
+  addFileSelected({ state, commit, rootState }, payload) {
+    commit('ADD_FILE_SELECTED', payload);
+    commit('RESET_SELECTED_FOLDER');
+  },
+  download({ state, commit, rootState }) {
+    commit('LOADING')
+    console.log(state.selectedFiles);
+    commit('RESET_SELECTED_FILES');
+    commit('UNLOADING');
   },
   createFolder({ state, commit, rootState }, payload) {
     // @TODO: using axios to call create Folder api
   },
-  editFolder({ state, commit, rootState }, payload) {
+  deleteFolder({ state, commit, rootState }, payload) {
+    // @TODO: using axios to call delete Folder api
+  },
+  deleteSelected({ state, commit, rootState }, payload) {
+    // @TODO: using axios to call delete Folder api
+  },
+  editFolderName({ state, commit, rootState }, payload) {
     // @TODO: using axios to call edit Folder name api
 
   },
   editFile({ state, commit, rootState }, payload) {
     // @TODO: using axios to call edit File name api
 
-  },
-  executeCommand({ state, commit, rootState }, payload) {
-    switch (payload.command) {
-      case 'move': case 'copy': {
-        commit('UPDATE_CLIPBOARD', payload);
-        break;
-      }
-      case 'paste': {
-        let command  = state.clipboard.command;
-        let folderId = state.current.id;
-        console.log(command, folderId)
-        // @TODO: Execute command $command (using axios run copy of move)
-        commit('CLEAR_CLIPBOARD');
-        break
-      }
-      case 'default': {
-        break
-      }
-    }
   },
 }

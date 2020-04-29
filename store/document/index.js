@@ -3,16 +3,14 @@ import getters from './getters'
 import mutations from './mutations'
 
 let states = {
-  list: [],
+  files: [],
+  folders: [],
   current: {
     name: '',
     id: ''
   },
-  clipboard: {
-    files: [],
-    folders: [],
-    command: ''
-  },
+  selectedFiles: [],
+  selectedFolder: {},
   breadcrumb: [
     {
       text: 'Home',

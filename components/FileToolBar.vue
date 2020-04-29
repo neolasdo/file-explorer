@@ -2,13 +2,13 @@
   <div>
     <v-toolbar color="info" dark>
       <v-text-field dark v-model="keyword">
-        <v-menu slot="prepend-inner" v-model="menu" :close-on-content-click="false" :close-on-click="false" :nudge-width="200" offset-y>
+        <v-menu slot="prepend-inner" v-model="menu" :close-on-content-click="false" :nudge-width="200" offset-y>
           <template v-slot:activator="{ on }">
-            <v-btn small text v-on="on">
+            <v-btn small tile text v-on="on">
               検索 <v-icon>mdi-chevron-down</v-icon>
             </v-btn>
           </template>
-          <v-card tile>
+          <v-card tile max-width="500px">
             <v-container>
               <v-row align="center">
                 <v-col cols="4">
@@ -50,11 +50,11 @@
       <v-spacer></v-spacer>
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on" light tile>
-            追加 <v-icon>mdi-chevron-down</v-icon>
+          <v-btn tile v-on="on" dark outlined>
+            <v-icon>mdi-plus</v-icon> New
           </v-btn>
         </template>
-        <v-list>
+        <v-list tile dense>
           <v-list-item @click="">
             <v-list-item-title>ファイルのアップロード</v-list-item-title>
           </v-list-item>
@@ -65,11 +65,11 @@
       </v-menu>
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on" light class="ml-2" tile>
-            アクション <v-icon>mdi-chevron-down</v-icon>
+          <v-btn v-on="on" icon class="ml-2" dark>
+            <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
         </template>
-        <v-list>
+        <v-list tile dense>
           <v-list-item @click="">
             <v-list-item-title>署名依頼</v-list-item-title>
           </v-list-item>
@@ -92,7 +92,7 @@
   import {allFileTypes} from '@/helpers/file'
 
   export default {
-    name: 'DocumentToolBar',
+    name: 'FileToolBar',
     data() {
       return {
         menu: false,

@@ -1,13 +1,13 @@
 <template>
-  <document-list></document-list>
+  <file-manager></file-manager>
 </template>
 
 <script>
-  import DocumentList from "@/components/DocumentList";
+  import FileManager from "@/components/FileManager";
   export default {
     head() {
       return {
-        title: 'Company document list',
+        title: 'Company File manager',
         script: [
           {
             src: "https://code.jquery.com/jquery-3.1.0.js",
@@ -22,7 +22,7 @@
       }
     },
     components: {
-      'document-list': DocumentList
+      'file-manager': FileManager
     }
   }
 </script>

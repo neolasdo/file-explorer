@@ -21,7 +21,7 @@
 
 <script>
   export default {
-    name: 'DocumentPreviewModal',
+    name: 'FilePreviewModal',
     components: {},
     data() {
       return {

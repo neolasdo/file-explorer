@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="showDialog" persistent>
+    <v-dialog v-model="showDialog" persistent max-width="900px">
       <v-card>
         <v-card-title class="primary lighten-1" tile dark>
           <span class="headline">Upload {{ current.id !== ''? 'to '+ current.name: '' }} </span>
